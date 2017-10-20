@@ -1,0 +1,21 @@
+{
+  "name": "pokearepa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "babel": "babel -w ./src/js/script.js -o ./js/script.js -s",
+    "stylus": "stylus -w ./src/stylus/style.styl -o ./css/",
+    "b-sync": "browser-sync start --server --files \"css/*.css\" \"./*.html\" \"js/*.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "nib": "^1.1.2",
+    "rupture": "^0.6.2",
+    "stylus": "^0.54.5",
+    "typographic": "^3.0.0"
+  }
+}

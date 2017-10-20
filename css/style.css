@@ -1,0 +1,45 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Century Gothic";
+  font-size: 1.8em;
+  background-color: #2e2e2e;
+}
+#main {
+  background-color: #a43131;
+  color: #fff;
+  padding: 40vh 0 40vh 0;
+}
+@media only screen and (min-width: 992px) {
+  .flex {
+    display: flex;
+  }
+  .flex .vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: right;
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 768px) {
+  #search-pkmn-submit {
+    margin-top: 50px;
+  }
+}
+#panel-results {
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px #551a1a;
+}
+#panel-results > * {
+  transition: transform 0.8s;
+}
+#results {
+  color: #262626;
+  text-align: left;
+}
