@@ -2,7 +2,6 @@ const baseURL = 'https://pokeapi.co/api/v2/';
 const pokemonURL = identifier => `${baseURL}pokemon/${identifier}/`;
 
 const getData = (param, toGet) => {
-
     switch (toGet) {
         case 'pokemon':
             param = pokemonURL(param);
@@ -11,29 +10,21 @@ const getData = (param, toGet) => {
             // statements_def
             break;
     }
-
     let cacheKey = param
     let cached = getFromCache(cacheKey)
     if (cached) {
         return Promise.resolve(cached)
     }
-
     return fetch(param).then(response => {
-
         if (response.ok && response.status == 200) {
-
             const contentType = response.headers.get('Content-Type') || '';
-
             if (contentType.includes('application/json')) {
-
                 response.clone().text().then(content => {
-                    sessionStorage.setItem(cacheKey, content)
+                    localStorage.setItem(cacheKey, content)
                 })
-
                 return response.json().catch(error => {
                     return Promise.reject('Invalid JSON: ' + error.message);
                 });
-
             } else {
                 return Promise.reject('Invalid content type: ' + contentType)
             }
@@ -56,37 +47,53 @@ const drawPokemon = pokemonData => {
     } = pokemonData;
 
     const results = idSelector('results');
-    results.innerHTML += `
-    <span class="col-xs-4">
+    results.innerHTML = `
       <p>N° ${id}</p>
       <p>${name}</p>
       <p>${types.map( (index) => {
         return index.type.name;
       }).toLocaleString().replace(',',' - ')}</p>
       <img src="${image}" />
-    </span>
   `;
 };
 
 idSelector("main-form").addEventListener("submit", (event) => {
     event.preventDefault();
     let toSearch = idSelector("search-pkmn");
-    let panelResults = idSelector("panel-results");
     let value = toSearch.value.toLowerCase();
-    toSearch.disabled = true;
-    getData(value, 'pokemon')
-        .then(data => {
-            drawPokemon(data);
-            if (panelResults.classList.contains('hidden')) {
-                panelResults.classList.remove('hidden');
-            }
-            toSearch.value = '';
-            toSearch.disabled = false;
-        })
+    if (value.length > 0) {
+        toSearch.style.background = '#FFF';
+        toggleSearchState(toSearch);
+        getData(value, 'pokemon')
+            .then(data => {
+                toggleSearchState(toSearch);
+                drawPokemon(data);
+                $('#resultsmodal').modal('show');
+            })
+    } else {
+        toSearch.style.background = '#FFFFCC';
+        toSearch.focus();
+    }
 });
 
 function idSelector(id) {
     return document.querySelector(`#${id}`);
+}
+
+function toggleSearchState(param){
+    let button = param.nextElementSibling;
+    if (param.disabled) {
+        button.querySelector('#loading').classList.add('hidden');
+        button.querySelector('#go').classList.remove('hidden');
+        param.disabled = false;
+        button.disabled = false;
+        param.value = '';
+    } else {
+        button.querySelector('#go').classList.add('hidden');
+        button.querySelector('#loading').classList.remove('hidden');
+        param.disabled = true;
+        button.disabled = true;
+    }
 }
 
 // SIN USO
@@ -96,4 +103,8 @@ function setInCache(id, data) {
 
 function getFromCache(id) {
     return localStorage.getItem(id) ? JSON.parse(localStorage.getItem(id)) : false;
+}
+
+function display(param){
+    console.log(param);
 }

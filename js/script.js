@@ -6,7 +6,6 @@ var pokemonURL = function pokemonURL(identifier) {
 };
 
 var getData = function getData(param, toGet) {
-
     switch (toGet) {
         case 'pokemon':
             param = pokemonURL(param);
@@ -15,25 +14,18 @@ var getData = function getData(param, toGet) {
             // statements_def
             break;
     }
-
     var cacheKey = param;
     var cached = getFromCache(cacheKey);
     if (cached) {
         return Promise.resolve(cached);
     }
-
     return fetch(param).then(function (response) {
-
         if (response.ok && response.status == 200) {
-
             var contentType = response.headers.get('Content-Type') || '';
-
             if (contentType.includes('application/json')) {
-
                 response.clone().text().then(function (content) {
-                    sessionStorage.setItem(cacheKey, content);
+                    localStorage.setItem(cacheKey, content);
                 });
-
                 return response.json().catch(function (error) {
                     return Promise.reject('Invalid JSON: ' + error.message);
                 });
@@ -58,29 +50,47 @@ var drawPokemon = function drawPokemon(pokemonData) {
 
 
     var results = idSelector('results');
-    results.innerHTML += '\n    <span class="col-xs-4">\n      <p>N\xB0 ' + id + '</p>\n      <p>' + name + '</p>\n      <p>' + types.map(function (index) {
+    results.innerHTML = '\n      <p>N\xB0 ' + id + '</p>\n      <p>' + name + '</p>\n      <p>' + types.map(function (index) {
         return index.type.name;
-    }).toLocaleString().replace(',', ' - ') + '</p>\n      <img src="' + image + '" />\n    </span>\n  ';
+    }).toLocaleString().replace(',', ' - ') + '</p>\n      <img src="' + image + '" />\n  ';
 };
 
 idSelector("main-form").addEventListener("submit", function (event) {
     event.preventDefault();
     var toSearch = idSelector("search-pkmn");
-    var panelResults = idSelector("panel-results");
     var value = toSearch.value.toLowerCase();
-    toSearch.disabled = true;
-    getData(value, 'pokemon').then(function (data) {
-        drawPokemon(data);
-        if (panelResults.classList.contains('hidden')) {
-            panelResults.classList.remove('hidden');
-        }
-        toSearch.value = '';
-        toSearch.disabled = false;
-    });
+    if (value.length > 0) {
+        toSearch.style.background = '#FFF';
+        toggleSearchState(toSearch);
+        getData(value, 'pokemon').then(function (data) {
+            toggleSearchState(toSearch);
+            drawPokemon(data);
+            $('#resultsmodal').modal('show');
+        });
+    } else {
+        toSearch.style.background = '#FFFFCC';
+        toSearch.focus();
+    }
 });
 
 function idSelector(id) {
     return document.querySelector('#' + id);
+}
+
+function toggleSearchState(param) {
+    var button = param.nextElementSibling;
+    if (param.disabled) {
+        button.querySelector('#loading').classList.add('hidden');
+        button.querySelector('#go').classList.remove('hidden');
+        param.disabled = false;
+        button.disabled = false;
+        param.value = '';
+    } else {
+        button.querySelector('#go').classList.add('hidden');
+        button.querySelector('#loading').classList.remove('hidden');
+        param.disabled = true;
+        button.disabled = true;
+    }
 }
 
 // SIN USO
@@ -90,6 +100,10 @@ function setInCache(id, data) {
 
 function getFromCache(id) {
     return localStorage.getItem(id) ? JSON.parse(localStorage.getItem(id)) : false;
+}
+
+function display(param) {
+    console.log(param);
 }
 
 //# sourceMappingURL=script.js.map
