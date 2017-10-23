@@ -39,7 +39,8 @@ body {
 #panel-results > * {
   transition: transform 0.8s;
 }
-#results {
+#results p {
   color: #262626;
   text-align: left;
+  font-size: 0.9em;
 }

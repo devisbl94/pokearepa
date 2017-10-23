@@ -1,13 +1,21 @@
 const baseURL = 'https://pokeapi.co/api/v2/';
 const pokemonURL = identifier => `${baseURL}pokemon/${identifier}/`;
+const pokedexEntry = identifier => `${baseURL}pokemon-species/${identifier}/`;
+const typeDesc = identifier => `${baseURL}type/${identifier}/`;
 
 const getData = (param, toGet) => {
     switch (toGet) {
         case 'pokemon':
             param = pokemonURL(param);
             break;
+        case 'pokedex':
+            param = pokedexEntry(param);
+            break;
+        case 'type':
+            param = typeDesc(param);
+            break;
         default:
-            // statements_def
+            return Promise.reject("Invalid request.");
             break;
     }
     let cacheKey = param
@@ -38,24 +46,64 @@ const getData = (param, toGet) => {
     });
 }
 
-const drawPokemon = pokemonData => {
-    const {
-        name,
-        id,
-        sprites: { front_default: image },
-        types
-    } = pokemonData;
+const returnPromises = object => {
+    let length = object.length,
+        array = [],
+        promise = new Promise( (resolve, reject) => {
+            object.forEach( index => {
+                index.then( value => {
+                    array.push(value[0]);
+                    if (array.length == length) {
+                        resolve(array);
+                    }
+                })
+            })
+    });
+    return promise;
+}
 
-    const results = idSelector('results');
-    results.innerHTML = `
-      <p>N° ${id}</p>
-      <p>${name}</p>
-      <p>${types.map( (index) => {
-        return index.type.name;
-      }).toLocaleString().replace(',',' - ')}</p>
-      <img src="${image}" />
-  `;
-};
+const drawPokemon = pokemonData => {
+    let promise = new Promise( (resolve, reject) => {
+        const {
+            name,
+            id,
+            sprites: { front_default: image },
+            types
+        } = pokemonData;
+
+        let lang_types = types.map( index => {
+           return getData(index.type.name, "type")
+                .then( type => {
+                    return type.names.filter(value => {
+                        return value.language.name == "es"
+                    })
+                })
+        })
+
+        returnPromises(lang_types).then( tipos => {
+            setTimeout( () => {
+                const results = idSelector('results');
+                results.innerHTML = `
+                    <div class = "row">
+                        <div class="col-sm-3">
+                            <img class="img-responsive" src="${image}" />
+                        </div>
+                        <div class="col-sm-3">
+                            <p>N° ${id}</p>
+                            <p>${name}</p>
+                            <p>Tipo: ${tipos.map( type => {
+                                return type.name;
+                            }).toLocaleString().replace(',',' - ')}</p>
+                        </div>
+                    </div>
+                `;
+                resolve(true);
+            }, 0)
+        })
+    })
+
+    return promise;
+}
 
 idSelector("main-form").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -64,12 +112,15 @@ idSelector("main-form").addEventListener("submit", (event) => {
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
         toggleSearchState(toSearch);
-        getData(value, 'pokemon')
-            .then(data => {
+        getData(value, 'pokemon').then( data => {
+            drawPokemon(data).then( () => {
                 toggleSearchState(toSearch);
-                drawPokemon(data);
-                $('#resultsmodal').modal('show');
-            })
+                $('#main-results').modal('show');
+            });
+        }).catch( error => {
+            toggleSearchState(toSearch);
+            alert(`Error de conexión.`)
+        })
     } else {
         toSearch.style.background = '#FFFFCC';
         toSearch.focus();
