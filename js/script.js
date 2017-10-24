@@ -54,46 +54,57 @@ var getData = function getData(param, toGet) {
     });
 };
 
-var returnPromises = function returnPromises(object) {
-    var length = object.length,
-        array = [],
-        promise = new Promise(function (resolve, reject) {
-        object.forEach(function (index) {
-            index.then(function (value) {
-                array.push(value[0]);
-                if (array.length == length) {
-                    resolve(array);
-                }
-            });
-        });
-    });
-    return promise;
-};
+// const returnPromises = object => {
+//     let length = object.length,
+//         array = [],
+//         promise = new Promise( (resolve, reject) => {
+//             object.forEach( index => {
+//                 index.then( value => {
+//                     array.push(value[0]);
+//                     if (array.length == length) {
+//                         resolve(array);
+//                     }
+//                 })
+//             })
+//     });
+//     return promise;
+// }
 
 var drawPokemon = function drawPokemon(pokemonData) {
     var promise = new Promise(function (resolve, reject) {
         var name = pokemonData.name,
             id = pokemonData.id,
             image = pokemonData.sprites.front_default,
-            types = pokemonData.types;
+            types = pokemonData.types,
+            stats = pokemonData.stats;
+
+        // let lang_types = types.map( index => {
+        //    return getData(index.type.name, "type")
+        //         .then( type => {
+        //             return type.names.filter(value => {
+        //                 return value.language.name == "es"
+        //             })
+        //         })
+        // })
+
+        getData(name, 'pokedex').then(function (entry) {
+            var habitat = entry.habitat,
+                egg_groups = entry.egg_groups,
+                flavor_text_entries = entry.flavor_text_entries;
 
 
-        var lang_types = types.map(function (index) {
-            return getData(index.type.name, "type").then(function (type) {
-                return type.names.filter(function (value) {
-                    return value.language.name == "es";
-                });
-            });
-        });
+            var get_habitat = habitat == null ? 'none' : habitat.name;
+            var flavorText = flavor_text_entries[1].flavor_text;
 
-        returnPromises(lang_types).then(function (tipos) {
-            setTimeout(function () {
-                var results = idSelector('results');
-                results.innerHTML = '\n                    <div class = "row">\n                        <div class="col-sm-3">\n                            <img class="img-responsive" src="' + image + '" />\n                        </div>\n                        <div class="col-sm-3">\n                            <p>N\xB0 ' + id + '</p>\n                            <p>' + name + '</p>\n                            <p>Tipo: ' + tipos.map(function (type) {
-                    return type.name;
-                }).toLocaleString().replace(',', ' - ') + '</p>\n                        </div>\n                    </div>\n                ';
-                resolve(true);
-            }, 0);
+            var results = idSelector('results');
+            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class = "row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + '</p>\n                                    <p>' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.map(function (value) {
+                return capitalizeFirst(value.type.name);
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Egg groups: ' + egg_groups.map(function (value) {
+                return capitalizeFirst(value.name);
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + capitalizeFirst(flavorText) + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
+                return '\n                                    <span class="tiny">' + value.stat.name.toUpperCase() + ' </span>\n                                    <div class="progress">\n                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ' + round(value.base_stat) + '%">\n                                            ' + value.base_stat + '\n                                        </div>\n                                    </div>';
+            }).toLocaleString().replace(/(,)/g, '') + '\n                        </div>\n                    </div>\n                ';
+            resolve(true);
         });
     });
 
@@ -140,6 +151,14 @@ function toggleSearchState(param) {
         param.disabled = true;
         button.disabled = true;
     }
+}
+
+function round(num) {
+    return Math.ceil(num * 100 / 190);
+}
+
+function capitalizeFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 // SIN USO

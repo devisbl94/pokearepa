@@ -46,21 +46,21 @@ const getData = (param, toGet) => {
     });
 }
 
-const returnPromises = object => {
-    let length = object.length,
-        array = [],
-        promise = new Promise( (resolve, reject) => {
-            object.forEach( index => {
-                index.then( value => {
-                    array.push(value[0]);
-                    if (array.length == length) {
-                        resolve(array);
-                    }
-                })
-            })
-    });
-    return promise;
-}
+// const returnPromises = object => {
+//     let length = object.length,
+//         array = [],
+//         promise = new Promise( (resolve, reject) => {
+//             object.forEach( index => {
+//                 index.then( value => {
+//                     array.push(value[0]);
+//                     if (array.length == length) {
+//                         resolve(array);
+//                     }
+//                 })
+//             })
+//     });
+//     return promise;
+// }
 
 const drawPokemon = pokemonData => {
     let promise = new Promise( (resolve, reject) => {
@@ -68,38 +68,72 @@ const drawPokemon = pokemonData => {
             name,
             id,
             sprites: { front_default: image },
-            types
+            types,
+            stats
         } = pokemonData;
 
-        let lang_types = types.map( index => {
-           return getData(index.type.name, "type")
-                .then( type => {
-                    return type.names.filter(value => {
-                        return value.language.name == "es"
-                    })
-                })
-        })
+        // let lang_types = types.map( index => {
+        //    return getData(index.type.name, "type")
+        //         .then( type => {
+        //             return type.names.filter(value => {
+        //                 return value.language.name == "es"
+        //             })
+        //         })
+        // })
 
-        returnPromises(lang_types).then( tipos => {
-            setTimeout( () => {
+        getData(name, 'pokedex')
+            .then(entry => {
+
+                const {
+                    habitat,
+                    egg_groups,
+                    flavor_text_entries,
+                } = entry;
+
+                let get_habitat = habitat == null ? 'none' : habitat.name;
+                let flavorText = flavor_text_entries[1].flavor_text;
+
                 const results = idSelector('results');
                 results.innerHTML = `
-                    <div class = "row">
-                        <div class="col-sm-3">
-                            <img class="img-responsive" src="${image}" />
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <div class = "row">
+                                <div class="col-xs-4">
+                                    <img class="img-responsive center-block" src="${image}" />
+                                </div>
+                                <div class="col-xs-8">
+                                    <p>N° ${id}</p>
+                                    <p>${capitalizeFirst(name)}</p>
+                                    <p>Type: ${types.map( value => {
+                                        return capitalizeFirst(value.type.name);
+                                    }).toLocaleString().replace(',',' - ')}</p>
+                                    <p>Egg groups: ${egg_groups.map( value => {
+                                        return capitalizeFirst(value.name);
+                                    }).toLocaleString().replace(',',' - ')}</p>
+                                    <p>Habitat: ${capitalizeFirst(get_habitat)}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p>${capitalizeFirst(flavorText)}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-3">
-                            <p>N° ${id}</p>
-                            <p>${name}</p>
-                            <p>Tipo: ${tipos.map( type => {
-                                return type.name;
-                            }).toLocaleString().replace(',',' - ')}</p>
+                        <div class="col-xs-4">
+                            ${stats.reverse().map( value => {
+                                return `
+                                    <span class="tiny">${value.stat.name.toUpperCase()} </span>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ${round(value.base_stat)}%">
+                                            ${value.base_stat}
+                                        </div>
+                                    </div>`
+                            }).toLocaleString().replace(/(,)/g,'')}
                         </div>
                     </div>
                 `;
                 resolve(true);
-            }, 0)
-        })
+            })
     })
 
     return promise;
@@ -145,6 +179,14 @@ function toggleSearchState(param){
         param.disabled = true;
         button.disabled = true;
     }
+}
+
+function round(num){
+    return Math.ceil((num * 100) / 190);
+}
+
+function capitalizeFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 // SIN USO
