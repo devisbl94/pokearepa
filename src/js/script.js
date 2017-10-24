@@ -42,7 +42,7 @@ const getData = (param, toGet) => {
             return Promise.reject('HTTP error: ' + response.status);
         }
     }).catch(error => {
-        return Promise.reject(error.message);
+        return Promise.reject('Connection error: ' + error.message);
     });
 }
 
@@ -64,6 +64,7 @@ const getData = (param, toGet) => {
 
 const drawPokemon = pokemonData => {
     let promise = new Promise( (resolve, reject) => {
+
         const {
             name,
             id,
@@ -91,7 +92,13 @@ const drawPokemon = pokemonData => {
                 } = entry;
 
                 let get_habitat = habitat == null ? 'none' : habitat.name;
-                let flavorText = flavor_text_entries[1].flavor_text;
+
+                let flavorText = false;
+                flavor_text_entries.map( index => {
+                    if (index.language.name == "en" && flavorText == false) {
+                        flavorText = index.flavor_text;
+                    }
+                });
 
                 const results = idSelector('results');
                 results.innerHTML = `
@@ -105,34 +112,42 @@ const drawPokemon = pokemonData => {
                                     <p>N° ${id}</p>
                                     <p>${capitalizeFirst(name)}</p>
                                     <p>Type: ${types.map( value => {
+
                                         return capitalizeFirst(value.type.name);
+
                                     }).toLocaleString().replace(',',' - ')}</p>
                                     <p>Egg groups: ${egg_groups.map( value => {
+
                                         return capitalizeFirst(value.name);
+
                                     }).toLocaleString().replace(',',' - ')}</p>
                                     <p>Habitat: ${capitalizeFirst(get_habitat)}</p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <p>${capitalizeFirst(flavorText)}</p>
+                                    <p>${flavorText}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-4">
                             ${stats.reverse().map( value => {
+
                                 return `
                                     <span class="tiny">${value.stat.name.toUpperCase()} </span>
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ${round(value.base_stat)}%">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ${roundStat(value.base_stat)}%">
                                             ${value.base_stat}
                                         </div>
                                     </div>`
+
                             }).toLocaleString().replace(/(,)/g,'')}
                         </div>
                     </div>
                 `;
                 resolve(true);
+            }).catch(error => {
+                reject(`${error} on "${name} - Pokedex"`)
             })
     })
 
@@ -146,15 +161,24 @@ idSelector("main-form").addEventListener("submit", (event) => {
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
         toggleSearchState(toSearch);
+
         getData(value, 'pokemon').then( data => {
+
             drawPokemon(data).then( () => {
+
                 toggleSearchState(toSearch);
                 $('#main-results').modal('show');
+
+            }).catch( error => {
+                toggleSearchState(toSearch);
+                alert(error)
             });
+
         }).catch( error => {
             toggleSearchState(toSearch);
-            alert(`Error de conexión.`)
+            alert(`${error} on "${value} - Pokemon"`)
         })
+
     } else {
         toSearch.style.background = '#FFFFCC';
         toSearch.focus();
@@ -181,7 +205,7 @@ function toggleSearchState(param){
     }
 }
 
-function round(num){
+function roundStat(num){
     return Math.ceil((num * 100) / 190);
 }
 

@@ -50,7 +50,7 @@ var getData = function getData(param, toGet) {
             return Promise.reject('HTTP error: ' + response.status);
         }
     }).catch(function (error) {
-        return Promise.reject(error.message);
+        return Promise.reject('Connection error: ' + error.message);
     });
 };
 
@@ -94,17 +94,28 @@ var drawPokemon = function drawPokemon(pokemonData) {
 
 
             var get_habitat = habitat == null ? 'none' : habitat.name;
-            var flavorText = flavor_text_entries[1].flavor_text;
+
+            var flavorText = false;
+            flavor_text_entries.map(function (index) {
+                if (index.language.name == "en" && flavorText == false) {
+                    flavorText = index.flavor_text;
+                }
+            });
 
             var results = idSelector('results');
             results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class = "row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + '</p>\n                                    <p>' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.map(function (value) {
+
                 return capitalizeFirst(value.type.name);
             }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Egg groups: ' + egg_groups.map(function (value) {
+
                 return capitalizeFirst(value.name);
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + capitalizeFirst(flavorText) + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
-                return '\n                                    <span class="tiny">' + value.stat.name.toUpperCase() + ' </span>\n                                    <div class="progress">\n                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ' + round(value.base_stat) + '%">\n                                            ' + value.base_stat + '\n                                        </div>\n                                    </div>';
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + flavorText + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
+
+                return '\n                                    <span class="tiny">' + value.stat.name.toUpperCase() + ' </span>\n                                    <div class="progress">\n                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ' + roundStat(value.base_stat) + '%">\n                                            ' + value.base_stat + '\n                                        </div>\n                                    </div>';
             }).toLocaleString().replace(/(,)/g, '') + '\n                        </div>\n                    </div>\n                ';
             resolve(true);
+        }).catch(function (error) {
+            reject(error + ' on "' + name + ' - Pokedex"');
         });
     });
 
@@ -118,14 +129,20 @@ idSelector("main-form").addEventListener("submit", function (event) {
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
         toggleSearchState(toSearch);
+
         getData(value, 'pokemon').then(function (data) {
+
             drawPokemon(data).then(function () {
+
                 toggleSearchState(toSearch);
                 $('#main-results').modal('show');
+            }).catch(function (error) {
+                toggleSearchState(toSearch);
+                alert(error);
             });
         }).catch(function (error) {
             toggleSearchState(toSearch);
-            alert('Error de conexi\xF3n.');
+            alert(error + ' on "' + value + ' - Pokemon"');
         });
     } else {
         toSearch.style.background = '#FFFFCC';
@@ -153,7 +170,7 @@ function toggleSearchState(param) {
     }
 }
 
-function round(num) {
+function roundStat(num) {
     return Math.ceil(num * 100 / 190);
 }
 
