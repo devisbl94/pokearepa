@@ -70,7 +70,10 @@ const drawPokemon = pokemonData => {
             id,
             sprites: { front_default: image },
             types,
-            stats
+            stats,
+            abilities,
+            height,
+            weight
         } = pokemonData;
 
         // let lang_types = types.map( index => {
@@ -110,16 +113,29 @@ const drawPokemon = pokemonData => {
                                 </div>
                                 <div class="col-xs-8">
                                     <p>N° ${id} - ${capitalizeFirst(name)}</p>
-                                    <p>Type: ${types.map( value => {
+                                    <p>Type: ${types.reverse().map( value => {
                                         return capitalizeFirst(value.type.name);
+                                    }).toLocaleString().replace(',',' - ')}</p>
+                                    <p>Abilities: ${abilities.reverse().map( value => {
+                                        return (value.is_hidden ? `(HA) ` : '') + capitalizeFirst(value.ability.name);
                                     }).toLocaleString().replace(',',' - ')}</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12">
-                                    <p>Egg groups: ${egg_groups.map( value => {
-                                        return capitalizeFirst(value.name);
+                                <div class="col-xs-6">
+                                    <p>Weight: ${decimalFormat(weight)} kg</p>
+                                </div>
+                                <div class="col-xs-6">
+                                    <p>Height: ${decimalFormat(height)} m</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <p>Egg groups: ${egg_groups.reverse().map( value => {
+                                        return lastIsNumber(capitalizeFirst(value.name));
                                     }).toLocaleString().replace(',',' - ')}</p>
+                                </div>
+                                <div class="col-xs-6">
                                     <p>Habitat: ${capitalizeFirst(get_habitat)}</p>
                                 </div>
                             </div>
@@ -210,6 +226,15 @@ function roundStat(num){
 
 function capitalizeFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function lastIsNumber(string){
+    return isNaN(string.slice(-1)) ? string :string.slice(0, string.length-1) + ' ' + string.slice(-1)
+}
+
+function decimalFormat(num) {
+    num = num.toString();
+    return num.length == 1 ? num : num.substring(0,num.length-1)+"."+num.substr(-1);
 }
 
 // SIN USO

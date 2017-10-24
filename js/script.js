@@ -76,7 +76,10 @@ var drawPokemon = function drawPokemon(pokemonData) {
             id = pokemonData.id,
             image = pokemonData.sprites.front_default,
             types = pokemonData.types,
-            stats = pokemonData.stats;
+            stats = pokemonData.stats,
+            abilities = pokemonData.abilities,
+            height = pokemonData.height,
+            weight = pokemonData.weight;
 
         // let lang_types = types.map( index => {
         //    return getData(index.type.name, "type")
@@ -103,11 +106,13 @@ var drawPokemon = function drawPokemon(pokemonData) {
             });
 
             var results = idSelector('results');
-            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.map(function (value) {
+            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.reverse().map(function (value) {
                 return capitalizeFirst(value.type.name);
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>Egg groups: ' + egg_groups.map(function (value) {
-                return capitalizeFirst(value.name);
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + flavorText + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Abilities: ' + abilities.reverse().map(function (value) {
+                return (value.is_hidden ? '(HA) ' : '') + capitalizeFirst(value.ability.name);
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-6">\n                                    <p>Weight: ' + decimalFormat(weight) + ' kg</p>\n                                </div>\n                                <div class="col-xs-6">\n                                    <p>Height: ' + decimalFormat(height) + ' m</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-6">\n                                    <p>Egg groups: ' + egg_groups.reverse().map(function (value) {
+                return lastIsNumber(capitalizeFirst(value.name));
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                                <div class="col-xs-6">\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + flavorText + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
 
                 return '\n                                    <span class="tiny">' + value.stat.name.toUpperCase() + ' </span>\n                                    <div class="progress">\n                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ' + roundStat(value.base_stat) + '%">\n                                            ' + value.base_stat + '\n                                        </div>\n                                    </div>';
             }).toLocaleString().replace(/(,)/g, '') + '\n                        </div>\n                    </div>\n                ';
@@ -174,6 +179,15 @@ function roundStat(num) {
 
 function capitalizeFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function lastIsNumber(string) {
+    return isNaN(string.slice(-1)) ? string : string.slice(0, string.length - 1) + ' ' + string.slice(-1);
+}
+
+function decimalFormat(num) {
+    num = num.toString();
+    return num.length == 1 ? num : num.substring(0, num.length - 1) + "." + num.substr(-1);
 }
 
 // SIN USO
