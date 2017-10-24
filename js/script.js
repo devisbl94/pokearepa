@@ -103,11 +103,9 @@ var drawPokemon = function drawPokemon(pokemonData) {
             });
 
             var results = idSelector('results');
-            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class = "row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + '</p>\n                                    <p>' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.map(function (value) {
-
+            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.map(function (value) {
                 return capitalizeFirst(value.type.name);
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Egg groups: ' + egg_groups.map(function (value) {
-
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>Egg groups: ' + egg_groups.map(function (value) {
                 return capitalizeFirst(value.name);
             }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + flavorText + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
 

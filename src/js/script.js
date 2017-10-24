@@ -104,22 +104,21 @@ const drawPokemon = pokemonData => {
                 results.innerHTML = `
                     <div class="row">
                         <div class="col-xs-8">
-                            <div class = "row">
+                            <div class="row">
                                 <div class="col-xs-4">
                                     <img class="img-responsive center-block" src="${image}" />
                                 </div>
                                 <div class="col-xs-8">
-                                    <p>N° ${id}</p>
-                                    <p>${capitalizeFirst(name)}</p>
+                                    <p>N° ${id} - ${capitalizeFirst(name)}</p>
                                     <p>Type: ${types.map( value => {
-
                                         return capitalizeFirst(value.type.name);
-
                                     }).toLocaleString().replace(',',' - ')}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
                                     <p>Egg groups: ${egg_groups.map( value => {
-
                                         return capitalizeFirst(value.name);
-
                                     }).toLocaleString().replace(',',' - ')}</p>
                                     <p>Habitat: ${capitalizeFirst(get_habitat)}</p>
                                 </div>
