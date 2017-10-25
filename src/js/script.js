@@ -163,6 +163,7 @@ const drawPokemon = pokemonData => {
                         </div>
                     </div>
                 `;
+                $('#main-results').modal('show');
                 resolve(true);
             }).catch(error => {
                 reject(`${error} on "${name} - Pokedex"`)
@@ -201,7 +202,6 @@ idSelector("main-form").addEventListener("submit", (event) => {
                 toggleSearchState(toSearch);
                 addClass(lateAnswer, 'pending');
                 addClass(lateAnswer, 'hidden');
-                $('#main-results').modal('show');
 
             }).catch( error => {
                 toggleSearchState(toSearch);

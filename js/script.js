@@ -119,6 +119,7 @@ var drawPokemon = function drawPokemon(pokemonData) {
 
                 return '\n                                    <span class="tiny">' + value.stat.name.toUpperCase() + ' </span>\n                                    <div class="progress">\n                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ' + roundStat(value.base_stat) + '%">\n                                            ' + value.base_stat + '\n                                        </div>\n                                    </div>';
             }).toLocaleString().replace(/(,)/g, '') + '\n                        </div>\n                    </div>\n                ';
+            $('#main-results').modal('show');
             resolve(true);
         }).catch(function (error) {
             reject(error + ' on "' + name + ' - Pokedex"');
@@ -157,7 +158,6 @@ idSelector("main-form").addEventListener("submit", function (event) {
                 toggleSearchState(toSearch);
                 addClass(lateAnswer, 'pending');
                 addClass(lateAnswer, 'hidden');
-                $('#main-results').modal('show');
             }).catch(function (error) {
                 toggleSearchState(toSearch);
                 alert(error);
