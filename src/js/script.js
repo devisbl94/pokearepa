@@ -28,7 +28,10 @@ const getData = (param, toGet) => {
             const contentType = response.headers.get('Content-Type') || '';
             if (contentType.includes('application/json')) {
                 response.clone().text().then(content => {
-                    localStorage.setItem(cacheKey, content)
+                    if(localStorage.setItem(cacheKey, content)){
+                        localStorage.clear();
+                        localStorage.setItem(cacheKey, content);
+                    }
                 })
                 return response.json().catch(error => {
                     return Promise.reject('Invalid JSON: ' + error.message);
@@ -66,7 +69,7 @@ const drawPokemon = pokemonData => {
     let promise = new Promise( (resolve, reject) => {
 
         const {
-            name,
+            species: { name: name },
             id,
             sprites: { front_default: image },
             types,
@@ -85,7 +88,7 @@ const drawPokemon = pokemonData => {
         //         })
         // })
 
-        getData(name, 'pokedex')
+        getData(id, 'pokedex')
             .then(entry => {
 
                 const {
@@ -112,31 +115,31 @@ const drawPokemon = pokemonData => {
                                     <img class="img-responsive center-block" src="${image}" />
                                 </div>
                                 <div class="col-xs-8">
-                                    <p>N° ${id} - ${capitalizeFirst(name)}</p>
-                                    <p>Type: ${types.reverse().map( value => {
+                                    <p><b>N° ${id} - ${capitalizeFirst(name)}</b></p>
+                                    <p><b>Type:</b><br> ${types.reverse().map( value => {
                                         return capitalizeFirst(value.type.name);
                                     }).toLocaleString().replace(',',' - ')}</p>
-                                    <p>Abilities: ${abilities.reverse().map( value => {
-                                        return (value.is_hidden ? `(HA) ` : '') + capitalizeFirst(value.ability.name);
+                                    <p><b>Abilities:</b><br> ${abilities.reverse().map( value => {
+                                        return (value.is_hidden ? ` (HA) ` : '') + capitalizeFirst(value.ability.name);
                                     }).toLocaleString().replace(',',' - ')}</p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <p>Weight: ${decimalFormat(weight)} kg</p>
+                                    <p><b>Weight:</b><br> ${decimalFormat(weight)} kg</p>
                                 </div>
                                 <div class="col-xs-6">
-                                    <p>Height: ${decimalFormat(height)} m</p>
+                                    <p><b>Height:</b><br> ${decimalFormat(height)} m</p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <p>Egg groups: ${egg_groups.reverse().map( value => {
+                                    <p><b>Egg groups:</b><br> ${egg_groups.reverse().map( value => {
                                         return lastIsNumber(capitalizeFirst(value.name));
                                     }).toLocaleString().replace(',',' - ')}</p>
                                 </div>
                                 <div class="col-xs-6">
-                                    <p>Habitat: ${capitalizeFirst(get_habitat)}</p>
+                                    <p><b>Habitat:</b><br> ${capitalizeFirst(get_habitat)}</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -173,15 +176,31 @@ idSelector("main-form").addEventListener("submit", (event) => {
     event.preventDefault();
     let toSearch = idSelector("search-pkmn");
     let value = toSearch.value.toLowerCase();
+    if (value == 'deoxys') {
+        value = "deoxys-normal";
+    }
+    if (value == 'giratina') {
+        value = "giratina-altered";
+    }
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
         toggleSearchState(toSearch);
+        let lateAnswer = idSelector("late-answer");
+        removeClass(lateAnswer, 'pending');
+
+        setTimeout( () => {
+            if (!lateAnswer.classList.contains('pending')) {
+                removeClass(lateAnswer, 'hidden');
+            }
+        }, 5000);
 
         getData(value, 'pokemon').then( data => {
 
             drawPokemon(data).then( () => {
 
                 toggleSearchState(toSearch);
+                addClass(lateAnswer, 'pending');
+                addClass(lateAnswer, 'hidden');
                 $('#main-results').modal('show');
 
             }).catch( error => {
@@ -191,7 +210,9 @@ idSelector("main-form").addEventListener("submit", (event) => {
 
         }).catch( error => {
             toggleSearchState(toSearch);
-            alert(`${error} on "${value} - Pokemon"`)
+            addClass(lateAnswer, 'pending');
+            addClass(lateAnswer, 'hidden');
+            alert(`${error} on "${value} - Pokemon"`);
         })
 
     } else {
@@ -207,16 +228,28 @@ function idSelector(id) {
 function toggleSearchState(param){
     let button = param.nextElementSibling;
     if (param.disabled) {
-        button.querySelector('#loading').classList.add('hidden');
-        button.querySelector('#go').classList.remove('hidden');
+        addClass(button.querySelector('#loading'), 'hidden');
+        removeClass(button.querySelector('#go'), 'hidden')
         param.disabled = false;
         button.disabled = false;
         param.value = '';
     } else {
-        button.querySelector('#go').classList.add('hidden');
-        button.querySelector('#loading').classList.remove('hidden');
+        addClass(button.querySelector('#go'), 'hidden');
+        removeClass(button.querySelector('#loading'), 'hidden')
         param.disabled = true;
         button.disabled = true;
+    }
+}
+
+function addClass(param, css){
+    if (!param.classList.contains(css)) {
+        param.classList.add(css)
+    }
+}
+
+function removeClass(param, css){
+    if (param.classList.contains(css)) {
+        param.classList.remove(css)
     }
 }
 
@@ -229,12 +262,12 @@ function capitalizeFirst(string) {
 }
 
 function lastIsNumber(string){
-    return isNaN(string.slice(-1)) ? string :string.slice(0, string.length-1) + ' ' + string.slice(-1)
+    return isNaN(string.slice(-1)) ? string : string.slice(0, string.length-1) + ' ' + string.slice(-1)
 }
 
 function decimalFormat(num) {
     num = num.toString();
-    return num.length == 1 ? num : num.substring(0,num.length-1)+"."+num.substr(-1);
+    return num.length == 1 ? num : num.substring(0, num.length-1) + "." + num.substr(-1);
 }
 
 // SIN USO

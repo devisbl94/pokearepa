@@ -36,7 +36,10 @@ var getData = function getData(param, toGet) {
             var contentType = response.headers.get('Content-Type') || '';
             if (contentType.includes('application/json')) {
                 response.clone().text().then(function (content) {
-                    localStorage.setItem(cacheKey, content);
+                    if (localStorage.setItem(cacheKey, content)) {
+                        localStorage.clear();
+                        localStorage.setItem(cacheKey, content);
+                    }
                 });
                 return response.json().catch(function (error) {
                     return Promise.reject('Invalid JSON: ' + error.message);
@@ -72,7 +75,7 @@ var getData = function getData(param, toGet) {
 
 var drawPokemon = function drawPokemon(pokemonData) {
     var promise = new Promise(function (resolve, reject) {
-        var name = pokemonData.name,
+        var name = pokemonData.species.name,
             id = pokemonData.id,
             image = pokemonData.sprites.front_default,
             types = pokemonData.types,
@@ -90,7 +93,7 @@ var drawPokemon = function drawPokemon(pokemonData) {
         //         })
         // })
 
-        getData(name, 'pokedex').then(function (entry) {
+        getData(id, 'pokedex').then(function (entry) {
             var habitat = entry.habitat,
                 egg_groups = entry.egg_groups,
                 flavor_text_entries = entry.flavor_text_entries;
@@ -106,13 +109,13 @@ var drawPokemon = function drawPokemon(pokemonData) {
             });
 
             var results = idSelector('results');
-            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</p>\n                                    <p>Type: ' + types.reverse().map(function (value) {
+            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p><b>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</b></p>\n                                    <p><b>Type:</b><br> ' + types.reverse().map(function (value) {
                 return capitalizeFirst(value.type.name);
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p>Abilities: ' + abilities.reverse().map(function (value) {
-                return (value.is_hidden ? '(HA) ' : '') + capitalizeFirst(value.ability.name);
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-6">\n                                    <p>Weight: ' + decimalFormat(weight) + ' kg</p>\n                                </div>\n                                <div class="col-xs-6">\n                                    <p>Height: ' + decimalFormat(height) + ' m</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-6">\n                                    <p>Egg groups: ' + egg_groups.reverse().map(function (value) {
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p><b>Abilities:</b><br> ' + abilities.reverse().map(function (value) {
+                return (value.is_hidden ? ' (HA) ' : '') + capitalizeFirst(value.ability.name);
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-6">\n                                    <p><b>Weight:</b><br> ' + decimalFormat(weight) + ' kg</p>\n                                </div>\n                                <div class="col-xs-6">\n                                    <p><b>Height:</b><br> ' + decimalFormat(height) + ' m</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-6">\n                                    <p><b>Egg groups:</b><br> ' + egg_groups.reverse().map(function (value) {
                 return lastIsNumber(capitalizeFirst(value.name));
-            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                                <div class="col-xs-6">\n                                    <p>Habitat: ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + flavorText + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
+            }).toLocaleString().replace(',', ' - ') + '</p>\n                                </div>\n                                <div class="col-xs-6">\n                                    <p><b>Habitat:</b><br> ' + capitalizeFirst(get_habitat) + '</p>\n                                </div>\n                            </div>\n                            <div class="row">\n                                <div class="col-xs-12">\n                                    <p>' + flavorText + '</p>\n                                </div>\n                            </div>\n                        </div>\n                        <div class="col-xs-4">\n                            ' + stats.reverse().map(function (value) {
 
                 return '\n                                    <span class="tiny">' + value.stat.name.toUpperCase() + ' </span>\n                                    <div class="progress">\n                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: ' + roundStat(value.base_stat) + '%">\n                                            ' + value.base_stat + '\n                                        </div>\n                                    </div>';
             }).toLocaleString().replace(/(,)/g, '') + '\n                        </div>\n                    </div>\n                ';
@@ -129,15 +132,31 @@ idSelector("main-form").addEventListener("submit", function (event) {
     event.preventDefault();
     var toSearch = idSelector("search-pkmn");
     var value = toSearch.value.toLowerCase();
+    if (value == 'deoxys') {
+        value = "deoxys-normal";
+    }
+    if (value == 'giratina') {
+        value = "giratina-altered";
+    }
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
         toggleSearchState(toSearch);
+        var lateAnswer = idSelector("late-answer");
+        removeClass(lateAnswer, 'pending');
+
+        setTimeout(function () {
+            if (!lateAnswer.classList.contains('pending')) {
+                removeClass(lateAnswer, 'hidden');
+            }
+        }, 5000);
 
         getData(value, 'pokemon').then(function (data) {
 
             drawPokemon(data).then(function () {
 
                 toggleSearchState(toSearch);
+                addClass(lateAnswer, 'pending');
+                addClass(lateAnswer, 'hidden');
                 $('#main-results').modal('show');
             }).catch(function (error) {
                 toggleSearchState(toSearch);
@@ -145,6 +164,8 @@ idSelector("main-form").addEventListener("submit", function (event) {
             });
         }).catch(function (error) {
             toggleSearchState(toSearch);
+            addClass(lateAnswer, 'pending');
+            addClass(lateAnswer, 'hidden');
             alert(error + ' on "' + value + ' - Pokemon"');
         });
     } else {
@@ -160,16 +181,28 @@ function idSelector(id) {
 function toggleSearchState(param) {
     var button = param.nextElementSibling;
     if (param.disabled) {
-        button.querySelector('#loading').classList.add('hidden');
-        button.querySelector('#go').classList.remove('hidden');
+        addClass(button.querySelector('#loading'), 'hidden');
+        removeClass(button.querySelector('#go'), 'hidden');
         param.disabled = false;
         button.disabled = false;
         param.value = '';
     } else {
-        button.querySelector('#go').classList.add('hidden');
-        button.querySelector('#loading').classList.remove('hidden');
+        addClass(button.querySelector('#go'), 'hidden');
+        removeClass(button.querySelector('#loading'), 'hidden');
         param.disabled = true;
         button.disabled = true;
+    }
+}
+
+function addClass(param, css) {
+    if (!param.classList.contains(css)) {
+        param.classList.add(css);
+    }
+}
+
+function removeClass(param, css) {
+    if (param.classList.contains(css)) {
+        param.classList.remove(css);
     }
 }
 
