@@ -173,6 +173,9 @@ const drawPokemon = pokemonData => {
     return promise;
 }
 
+alphabet(idSelector("birth-first"));
+alphabet(idSelector("birth-last"));
+
 idSelector("main-form").addEventListener("submit", (event) => {
     event.preventDefault();
     let toSearch = idSelector("search-pkmn");
@@ -220,6 +223,25 @@ idSelector("main-form").addEventListener("submit", (event) => {
         toSearch.focus();
     }
 });
+
+idSelector("birth-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let birth = idSelector("birth-pkmn").value;
+    let birthFirst = idSelector("birth-first").value;
+    let birthLast = idSelector("birth-last").value;
+
+    birth = addBirth(birth);
+    let firstMultiplier = calculateMultiplier(birthFirst);
+    let secondMultiplier = calculateMultiplier(birthLast);
+    let multiplier = firstMultiplier + secondMultiplier;
+
+    let result = (birth * multiplier).toFixed(0);
+
+    display(birth * multiplier)
+    display(result)
+
+})
 
 function idSelector(id) {
     return document.querySelector(`#${id}`);
@@ -270,6 +292,20 @@ function decimalFormat(num) {
     return num.length == 1 ?  "0." + num : num.substring(0, num.length-1) + "." + num.substr(-1);
 }
 
+function addBirth(date){
+    date = new Date(date);
+    date.setDate(date.getDate() + 1)
+    var day = ('0' + date.getDate()).slice(-2);
+    var month = ('0' + (date.getMonth() + 1)).slice(-2)
+    var year = date.getYear().toString().slice(-2);
+    return parseInt(day) + parseInt(month) + parseInt(year);
+}
+
+function calculateMultiplier(num){
+    num = num.toString();
+    return num.length > 1 ? parseFloat(num.charAt(0) + '.' + num.charAt(1)) : parseFloat('0' + '.' + num.charAt(0))
+}
+
 // SIN USO
 function setInCache(id, data) {
     localStorage.setItem(id, JSON.stringify(data));
@@ -279,10 +315,20 @@ function getFromCache(id) {
     return localStorage.getItem(id) ? JSON.parse(localStorage.getItem(id)) : false;
 }
 
+function alphabet(selector){
+    for(var i=0; i<26; i++) {
+        let letter = (i+10).toString(36);
+        let option = document.createElement("option");
+        option.appendChild(document.createTextNode(letter.toUpperCase()));
+        option.value = i+1;
+        selector.appendChild(option);
+    }
+}
+
 function display(param){
     console.log(param);
 }
 
 $('.carousel').carousel({
-    // interval: 5000
+    interval: 20000
 });
