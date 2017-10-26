@@ -93,7 +93,7 @@ var drawPokemon = function drawPokemon(pokemonData) {
         //         })
         // })
 
-        getData(id, 'pokedex').then(function (entry) {
+        getData(name, 'pokedex').then(function (entry) {
             var habitat = entry.habitat,
                 egg_groups = entry.egg_groups,
                 flavor_text_entries = entry.flavor_text_entries;
@@ -220,7 +220,7 @@ function lastIsNumber(string) {
 
 function decimalFormat(num) {
     num = num.toString();
-    return num.length == 1 ? num : num.substring(0, num.length - 1) + "." + num.substr(-1);
+    return num.length == 1 ? "0." + num : num.substring(0, num.length - 1) + "." + num.substr(-1);
 }
 
 // SIN USO
@@ -235,5 +235,9 @@ function getFromCache(id) {
 function display(param) {
     console.log(param);
 }
+
+$('.carousel').carousel({
+    // interval: 5000
+});
 
 //# sourceMappingURL=script.js.map

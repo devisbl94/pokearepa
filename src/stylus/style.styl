@@ -1,4 +1,4 @@
-// @import "nib"
+@import "nib"
 @import "rupture"
 // @import "typographic"
 @import "./_fonts.styl"
@@ -13,12 +13,13 @@ html, body
 body
 	font-family $font
 	font-size 16px
-	background-color $gray
+	background-color $white
 
 #main
 	background-color $red
-	color #fff
-	padding 20vh 0 20vh 0
+	color $white
+	padding 30vh 0 20vh 0
+	margin-bottom 100px
 
 +above(992px)
 	.flex
@@ -45,7 +46,7 @@ body
 
 .info-text
 	font-size 11px
-	color #fff
+	color $white
 	display block
 	text-align center
 	margin-top 5px
@@ -61,9 +62,69 @@ body
 	padding 7vh
 	
 .container-box , .container-box-full
-	background-color #fff
 	border-radius 5px
 	box-shadow: 5px 5px 5px darken($light, 20)
 	
 	> *
 		transition transform 0.8s
+
+.carousel-fade
+	
+	.carousel-control
+		z-index 2
+		background none
+		
+	.carousel-inner
+
+		.active
+			opacity 1
+			
+		.active.left, .active.right 
+			left 0
+			opacity 0
+			z-index 1
+
+		.next.left,	.prev.right
+			opacity 1
+
+		.item
+			opacity 0
+			transition-property opacity
+			
+			> img
+				-webkit-filter blur(2px)
+				width 100vw
+				height auto
+				margin 0 auto
+			
+			> .carousel-caption
+				padding 10vw
+				height 100%
+				width 100%
+				background-color rgba(0,0,0,0.6)
+				top 0
+				left 0
+				font-size 16px
+				text-align left
+				
+				> h2
+					font-weight bold
+
+@media all and (transform-3d), (-webkit-transform-3d) 
+	
+	.carousel-fade .carousel-inner >
+
+		.item.next, .item.active.right
+			opacity 0
+			-webkit-transform translate3d(0, 0, 0)
+			transform translate3d(0, 0, 0)
+
+		.item.prev, .item.active.left 
+			opacity 0
+			-webkit-transform translate3d(0, 0, 0)
+			transform translate3d(0, 0, 0)
+
+		.item.next.left, .item.prev.right, .item.active 
+			opacity 1
+			-webkit-transform translate3d(0, 0, 0)
+			transform translate3d(0, 0, 0)

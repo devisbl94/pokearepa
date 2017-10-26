@@ -88,7 +88,7 @@ const drawPokemon = pokemonData => {
         //         })
         // })
 
-        getData(id, 'pokedex')
+        getData(name, 'pokedex')
             .then(entry => {
 
                 const {
@@ -267,7 +267,7 @@ function lastIsNumber(string){
 
 function decimalFormat(num) {
     num = num.toString();
-    return num.length == 1 ? num : num.substring(0, num.length-1) + "." + num.substr(-1);
+    return num.length == 1 ?  "0." + num : num.substring(0, num.length-1) + "." + num.substr(-1);
 }
 
 // SIN USO
@@ -282,3 +282,7 @@ function getFromCache(id) {
 function display(param){
     console.log(param);
 }
+
+$('.carousel').carousel({
+    // interval: 5000
+});
