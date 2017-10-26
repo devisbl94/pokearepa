@@ -11,6 +11,11 @@ body {
   font-size: 16px;
   background-color: #fff;
 }
+section {
+  padding-bottom: 10vh;
+  -webkit-box-shadow: 0 5px 10px #161616;
+  box-shadow: 0 5px 10px #161616;
+}
 #main {
   background-color: #a43131;
   color: #fff;
@@ -51,11 +56,15 @@ body {
     -ms-flex-pack: center;
     -webkit-justify-content: center;
     justify-content: center;
-    text-align: right;
     width: 100%;
   }
 }
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 992px) {
+  #search-pkmn-submit {
+    text-align: right;
+  }
+}
+@media only screen and (max-width: 767px) {
   #search-pkmn-submit {
     margin-top: 30px;
   }
@@ -81,14 +90,24 @@ body {
 .tiny {
   font-size: 11px;
 }
+@media only screen and (min-width: 1200px) {
+  #poster {
+    max-height: 400px;
+    width: auto;
+  }
+}
+#carousel {
+  background-color: #2e2e2e;
+  padding: 50px;
+}
 .container-box {
   padding: 7vh;
 }
 .container-box,
 .container-box-full {
   border-radius: 5px;
-  -webkit-box-shadow: 5px 5px 5px #161616;
-  box-shadow: 5px 5px 5px #161616;
+  -webkit-box-shadow: 5px 5px 5px #2f2f2f;
+  box-shadow: 5px 5px 5px #2f2f2f;
 }
 .container-box > *,
 .container-box-full > * {
@@ -138,16 +157,27 @@ body {
   margin: 0 auto;
 }
 .carousel-fade .carousel-inner .item > .carousel-caption {
-  padding: 10vw;
+  padding: 100px;
   height: 100%;
   width: 100%;
   background-color: rgba(0,0,0,0.6);
   top: 0;
   left: 0;
-  font-size: 16px;
+  font-size: 24px;
   text-align: left;
 }
-.carousel-fade .carousel-inner .item > .carousel-caption > h2 {
+@media only screen and (max-width: 1200px) {
+  .carousel-fade .carousel-inner .item > .carousel-caption {
+    font-size: 20px;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .carousel-fade .carousel-inner .item > .carousel-caption {
+    padding: 50px;
+    font-size: 16px;
+  }
+}
+.carousel-fade .carousel-inner .item > .carousel-caption > :first-child {
   font-weight: bold;
 }
 @media all and (transform-3d), (-webkit-transform-3d) {
@@ -188,4 +218,9 @@ body {
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
   }
+}
+#birth {
+  padding: 50px 0 100px 0;
+  background-color: #a43131;
+  color: #fff;
 }
