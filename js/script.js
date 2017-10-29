@@ -191,8 +191,23 @@ idSelector("birth-form").addEventListener("submit", function (event) {
 
     var result = (birth * multiplier).toFixed(0);
 
-    display(birth * multiplier);
-    display(result);
+    if (result != 0) {
+
+        getData(result, 'pokemon').then(function (data) {
+
+            drawPokemon(data).then(function () {
+
+                display("done");
+            }).catch(function (error) {
+                toggleSearchState(toSearch);
+                alert(error);
+            });
+        }).catch(function (error) {
+            alert(error + ' on "' + value + ' - Pokemon"');
+        });
+    } else {
+        alert("i think you are a digimon");
+    }
 });
 
 function idSelector(id) {
@@ -282,7 +297,7 @@ function display(param) {
 }
 
 $('.carousel').carousel({
-    interval: 20000
+    interval: false
 });
 
 //# sourceMappingURL=script.js.map

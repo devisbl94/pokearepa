@@ -238,8 +238,26 @@ idSelector("birth-form").addEventListener("submit", (event) => {
 
     let result = (birth * multiplier).toFixed(0);
 
-    display(birth * multiplier)
-    display(result)
+    if (result != 0) {
+
+        getData(result, 'pokemon').then( data => {
+
+            drawPokemon(data).then( () => {
+
+                display("done");
+
+            }).catch( error => {
+                toggleSearchState(toSearch);
+                alert(error)
+            });
+
+        }).catch( error => {
+            alert(`${error} on "${value} - Pokemon"`);
+        })
+
+    } else {
+        alert("i think you are a digimon");
+    }
 
 })
 
@@ -330,5 +348,5 @@ function display(param){
 }
 
 $('.carousel').carousel({
-    interval: 20000
+    interval: false
 });
