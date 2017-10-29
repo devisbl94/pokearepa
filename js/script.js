@@ -62,22 +62,6 @@ var getData = function getData(param, toGet) {
     });
 };
 
-// const returnPromises = object => {
-//     let length = object.length,
-//         array = [],
-//         promise = new Promise( (resolve, reject) => {
-//             object.forEach( index => {
-//                 index.then( value => {
-//                     array.push(value[0]);
-//                     if (array.length == length) {
-//                         resolve(array);
-//                     }
-//                 })
-//             })
-//     });
-//     return promise;
-// }
-
 var drawPokemon = function drawPokemon(pokemonData) {
     var promise = new Promise(function (resolve, reject) {
         var name = pokemonData.species.name,
@@ -89,14 +73,6 @@ var drawPokemon = function drawPokemon(pokemonData) {
             height = pokemonData.height,
             weight = pokemonData.weight;
 
-        // let lang_types = types.map( index => {
-        //    return getData(index.type.name, "type")
-        //         .then( type => {
-        //             return type.names.filter(value => {
-        //                 return value.language.name == "es"
-        //             })
-        //         })
-        // })
 
         getData(name, 'pokedex').then(function (entry) {
             var habitat = entry.habitat,
@@ -147,7 +123,7 @@ idSelector("main-form").addEventListener("submit", function (event) {
     }
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
-        // toggleSearchState(toSearch);
+        toggleSearchState(toSearch.parentElement.children);
         var lateAnswer = idSelector("late-answer");
         removeClass(lateAnswer, 'pending');
 
@@ -161,15 +137,15 @@ idSelector("main-form").addEventListener("submit", function (event) {
 
             drawPokemon(data).then(function () {
 
-                // toggleSearchState(toSearch);
+                toggleSearchState(toSearch.parentElement.children);
                 addClass(lateAnswer, 'pending');
                 addClass(lateAnswer, 'hidden');
             }).catch(function (error) {
-                // toggleSearchState(toSearch);
+                toggleSearchState(toSearch.parentElement.children);
                 alert(error);
             });
         }).catch(function (error) {
-            // toggleSearchState(toSearch);
+            toggleSearchState(toSearch.parentElement.children);
             addClass(lateAnswer, 'pending');
             addClass(lateAnswer, 'hidden');
             alert(error + ' on "' + value + ' - Pokemon"');
@@ -186,30 +162,51 @@ idSelector("birth-form").addEventListener("submit", function (event) {
     var birth = idSelector("birth-pkmn").value;
     var birthFirst = idSelector("birth-first").value;
     var birthLast = idSelector("birth-last").value;
+    var birthSearchButton = idSelector("search-birth-pkmn");
 
-    birth = addBirth(birth);
-    var firstMultiplier = calculateMultiplier(birthFirst);
-    var secondMultiplier = calculateMultiplier(birthLast);
-    var multiplier = firstMultiplier + secondMultiplier;
+    if (isDate(birth)) {
+        birth = addBirth(birth);
+        var firstMultiplier = calculateMultiplier(birthFirst);
+        var secondMultiplier = calculateMultiplier(birthLast);
+        var multiplier = firstMultiplier + secondMultiplier;
 
-    var result = (birth * multiplier).toFixed(0);
+        var result = (birth * multiplier).toFixed(0);
 
-    if (result != 0) {
+        if (result != 0) {
 
-        getData(result, 'pokemon').then(function (data) {
+            var lateAnswer2 = idSelector("late-answer2");
+            removeClass(lateAnswer2, 'pending');
 
-            drawPokemon(data).then(function () {
+            setTimeout(function () {
+                if (!lateAnswer2.classList.contains('pending')) {
+                    removeClass(lateAnswer2, 'hidden');
+                }
+            }, 5000);
 
-                display("done");
+            toggleSearchState(birthSearchButton.parentElement.children);
+
+            getData(result, 'pokemon').then(function (data) {
+
+                drawPokemon(data).then(function () {
+
+                    toggleSearchState(birthSearchButton.parentElement.children);
+                    addClass(lateAnswer2, 'pending');
+                    addClass(lateAnswer2, 'hidden');
+                }).catch(function (error) {
+                    toggleSearchState(birthSearchButton.parentElement.children);
+                    alert(error);
+                });
             }).catch(function (error) {
-                // toggleSearchState(toSearch);
-                alert(error);
+                toggleSearchState(birthSearchButton.parentElement.children);
+                addClass(lateAnswer2, 'pending');
+                addClass(lateAnswer2, 'hidden');
+                alert(error + ' on "' + value + ' - Pokemon"');
             });
-        }).catch(function (error) {
-            alert(error + ' on "' + value + ' - Pokemon"');
-        });
+        } else {
+            alert("i think you are a digimon");
+        }
     } else {
-        alert("i think you are a digimon");
+        alert("Error. Invalid date.");
     }
 });
 
@@ -218,18 +215,33 @@ function idSelector(id) {
     return document.querySelector('#' + id);
 }
 
-function toggleSearchState(param) {
-    var button = param.nextElementSibling;
-    if (param.disabled) {
+function toggleSearchState(object) {
+    var button;
+    Object.values(object).map(function (index) {
+        if (index.localName == "button") {
+            button = index;
+        }
+    });
+
+    if (button.disabled) {
+        Object.values(object).map(function (index) {
+            index.disabled = false;
+            if (index.localName == "input" || index.localName == "textarea") {
+                index.value = '';
+            }
+            if (index.localName == 'select') {
+                index.selectedIndex = 0;
+            }
+        });
         addClass(button.querySelector('#loading'), 'hidden');
         removeClass(button.querySelector('#go'), 'hidden');
-        param.disabled = false;
         button.disabled = false;
-        param.value = '';
     } else {
+        Object.values(object).map(function (index) {
+            index.disabled = true;
+        });
         addClass(button.querySelector('#go'), 'hidden');
         removeClass(button.querySelector('#loading'), 'hidden');
-        param.disabled = true;
         button.disabled = true;
     }
 }
@@ -271,6 +283,10 @@ function todayIs() {
     return year + '-' + month + '-' + day;
 }
 
+function isDate(param) {
+    return param.match(/^(\d{4})+(-)+(\d{2})+(-)+(\d{2})$/g);
+}
+
 function addBirth(date) {
     date = new Date(date);
     date.setDate(date.getDate() + 1);
@@ -283,11 +299,6 @@ function addBirth(date) {
 function calculateMultiplier(num) {
     num = num.toString();
     return num.length > 1 ? parseFloat(num.charAt(0) + '.' + num.charAt(1)) : parseFloat('0' + '.' + num.charAt(0));
-}
-
-// SIN USO
-function setInCache(id, data) {
-    localStorage.setItem(id, JSON.stringify(data));
 }
 
 function getFromCache(id) {
@@ -309,14 +320,11 @@ function display(param) {
 }
 
 // INITIALIZING
-idSelector("search-pkmn").setCustomValidity('Please fill out this field.');
-
 $('.carousel').carousel({
     interval: false
 });
 
 idSelector("birth-pkmn").max = todayIs();
-idSelector("birth-pkmn").setCustomValidity('Please fill out this field.');
 alphabet(idSelector("birth-first"));
 alphabet(idSelector("birth-last"));
 
