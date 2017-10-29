@@ -45,8 +45,11 @@
 					<div class="col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-0 flex">
 						<form action="#" id="main-form" class="form-inline vertical">
 							<div class="form-group">
-								<input type="text" class="form-control" id="search-pkmn" name="search-pkmn">
+
+								<input type="text" class="form-control" id="search-pkmn" name="search-pkmn" max="20" required>
+
 								<button id="search-pkmn-submit" class="btn btn-default">Search <i id="loading" class="fa fa-spinner fa-spin hidden"></i><i id="go" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
+
 								<span class="info-text">Try and search for a Pokémon!<br>For example: Pikachu<br><span id="late-answer" class="pending hidden">Well... this is awkward...</span></span>
 							</div>
 						</form>
@@ -180,12 +183,17 @@
 						<form action="#" id="birth-form" class="form-inline vertical">
 							<div class="form-group text-center">
 								<h3>What's your secret Pokémon?<br>Put your birth date,<br> and then select the first letter of your first and last name</h3>
-								<input type="date" class="form-control" id="birth-pkmn" name="birth-pkmn">
-								<select name="birth-first" id="birth-first" class="form-control">
+
+								<input type="date" class="form-control" id="birth-pkmn" name="birth-pkmn" min="1916-01-01" required>
+
+								<select name="birth-first" id="birth-first" class="form-control" required>
 								</select>
-								<select name="birth-last" id="birth-last" class="form-control">
+
+								<select name="birth-last" id="birth-last" class="form-control" required>
 								</select>
+
 								<button id="search-birth-pkmn" class="btn btn-default">Search <i id="loading" class="fa fa-spinner fa-spin hidden"></i><i id="go" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
+
 								<span id="late-answer" class="info-text pending hidden">Eehhh... give me a sec</span>
 							</div>
 						</form>

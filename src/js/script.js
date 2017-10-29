@@ -1,8 +1,10 @@
+// URLs
 const baseURL = 'https://pokeapi.co/api/v2/';
 const pokemonURL = identifier => `${baseURL}pokemon/${identifier}/`;
 const pokedexEntry = identifier => `${baseURL}pokemon-species/${identifier}/`;
 const typeDesc = identifier => `${baseURL}type/${identifier}/`;
 
+// PRINCIPAL
 const getData = (param, toGet) => {
     switch (toGet) {
         case 'pokemon':
@@ -176,9 +178,7 @@ const drawPokemon = pokemonData => {
     return promise;
 }
 
-alphabet(idSelector("birth-first"));
-alphabet(idSelector("birth-last"));
-
+// EVENTS
 idSelector("main-form").addEventListener("submit", (event) => {
     event.preventDefault();
     let toSearch = idSelector("search-pkmn");
@@ -191,7 +191,7 @@ idSelector("main-form").addEventListener("submit", (event) => {
     }
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
-        toggleSearchState(toSearch);
+        // toggleSearchState(toSearch);
         let lateAnswer = idSelector("late-answer");
         removeClass(lateAnswer, 'pending');
 
@@ -205,17 +205,17 @@ idSelector("main-form").addEventListener("submit", (event) => {
 
             drawPokemon(data).then( () => {
 
-                toggleSearchState(toSearch);
+                // toggleSearchState(toSearch);
                 addClass(lateAnswer, 'pending');
                 addClass(lateAnswer, 'hidden');
 
             }).catch( error => {
-                toggleSearchState(toSearch);
+                // toggleSearchState(toSearch);
                 alert(error)
             });
 
         }).catch( error => {
-            toggleSearchState(toSearch);
+            // toggleSearchState(toSearch);
             addClass(lateAnswer, 'pending');
             addClass(lateAnswer, 'hidden');
             alert(`${error} on "${value} - Pokemon"`);
@@ -226,6 +226,8 @@ idSelector("main-form").addEventListener("submit", (event) => {
         toSearch.focus();
     }
 });
+
+
 
 idSelector("birth-form").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -250,7 +252,7 @@ idSelector("birth-form").addEventListener("submit", (event) => {
                 display("done");
 
             }).catch( error => {
-                toggleSearchState(toSearch);
+                // toggleSearchState(toSearch);
                 alert(error)
             });
 
@@ -264,6 +266,8 @@ idSelector("birth-form").addEventListener("submit", (event) => {
 
 })
 
+
+// FUNCTIONS
 function idSelector(id) {
     return document.querySelector(`#${id}`);
 }
@@ -313,12 +317,20 @@ function decimalFormat(num) {
     return num.length == 1 ?  "0." + num : num.substring(0, num.length-1) + "." + num.substr(-1);
 }
 
+function todayIs(){
+    let date = new Date();
+    var day = ('0' + date.getDate()).slice(-2),
+        month = ('0' + (date.getMonth() + 1)).slice(-2),
+        year = date.getFullYear().toString();
+    return `${year}-${month}-${day}`;
+}
+
 function addBirth(date){
     date = new Date(date);
-    date.setDate(date.getDate() + 1)
-    var day = ('0' + date.getDate()).slice(-2);
-    var month = ('0' + (date.getMonth() + 1)).slice(-2)
-    var year = date.getYear().toString().slice(-2);
+    date.setDate(date.getDate() + 1);
+    var day = ('0' + date.getDate()).slice(-2),
+        month = ('0' + (date.getMonth() + 1)).slice(-2),
+        year = date.getYear().toString().slice(-2);
     return parseInt(day) + parseInt(month) + parseInt(year);
 }
 
@@ -350,6 +362,14 @@ function display(param){
     console.log(param);
 }
 
+// INITIALIZING
+idSelector("search-pkmn").setCustomValidity('Please fill out this field.');
+
 $('.carousel').carousel({
     interval: false
 });
+
+idSelector("birth-pkmn").max = todayIs();
+idSelector("birth-pkmn").setCustomValidity('Please fill out this field.');
+alphabet(idSelector("birth-first"));
+alphabet(idSelector("birth-last"));
