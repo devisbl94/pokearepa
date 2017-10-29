@@ -36,7 +36,10 @@ var getData = function getData(param, toGet) {
             var contentType = response.headers.get('Content-Type') || '';
             if (contentType.includes('application/json')) {
                 response.clone().text().then(function (content) {
-                    if (localStorage.setItem(cacheKey, content)) {
+                    try {
+                        localStorage.setItem(cacheKey, content);
+                    } catch (e) {
+                        display("cache has been cleaned");
                         localStorage.clear();
                         localStorage.setItem(cacheKey, content);
                     }
