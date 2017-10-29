@@ -109,7 +109,7 @@ const drawPokemon = pokemonData => {
                 const results = idSelector('results');
                 results.innerHTML = `
                     <div class="row">
-                        <div class="col-xs-8">
+                        <div class="col-xs-12 col-sm-8">
                             <div class="row">
                                 <div class="col-xs-4">
                                     <img class="img-responsive center-block" src="${image}" />
@@ -148,7 +148,7 @@ const drawPokemon = pokemonData => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-sm-4 hidden-xs">
                             ${stats.reverse().map( value => {
 
                                 return `
