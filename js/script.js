@@ -114,6 +114,7 @@ var drawPokemon = function drawPokemon(pokemonData) {
 idSelector("main-form").addEventListener("submit", function (event) {
     event.preventDefault();
     var toSearch = idSelector("search-pkmn");
+    var mainForm = toSearch.parentElement.children;
     var value = toSearch.value.toLowerCase();
     if (value == 'deoxys') {
         value = "deoxys-normal";
@@ -123,7 +124,7 @@ idSelector("main-form").addEventListener("submit", function (event) {
     }
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
-        toggleSearchState(toSearch.parentElement.children);
+        toggleSearchState(mainForm);
         var lateAnswer = idSelector("late-answer");
         removeClass(lateAnswer, 'pending');
 
@@ -137,15 +138,15 @@ idSelector("main-form").addEventListener("submit", function (event) {
 
             drawPokemon(data).then(function () {
 
-                toggleSearchState(toSearch.parentElement.children);
+                toggleSearchState(mainForm);
                 addClass(lateAnswer, 'pending');
                 addClass(lateAnswer, 'hidden');
             }).catch(function (error) {
-                toggleSearchState(toSearch.parentElement.children);
+                toggleSearchState(mainForm);
                 alert(error);
             });
         }).catch(function (error) {
-            toggleSearchState(toSearch.parentElement.children);
+            toggleSearchState(mainForm);
             addClass(lateAnswer, 'pending');
             addClass(lateAnswer, 'hidden');
             alert(error + ' on "' + value + ' - Pokemon"');
@@ -163,6 +164,7 @@ idSelector("birth-form").addEventListener("submit", function (event) {
     var birthFirst = idSelector("birth-first").value;
     var birthLast = idSelector("birth-last").value;
     var birthSearchButton = idSelector("search-birth-pkmn");
+    var birthForm = birthSearchButton.parentElement.children;
 
     if (isDate(birth)) {
         birth = addBirth(birth);
@@ -183,21 +185,21 @@ idSelector("birth-form").addEventListener("submit", function (event) {
                 }
             }, 5000);
 
-            toggleSearchState(birthSearchButton.parentElement.children);
+            toggleSearchState(birthForm);
 
             getData(result, 'pokemon').then(function (data) {
 
                 drawPokemon(data).then(function () {
 
-                    toggleSearchState(birthSearchButton.parentElement.children);
+                    toggleSearchState(birthForm);
                     addClass(lateAnswer2, 'pending');
                     addClass(lateAnswer2, 'hidden');
                 }).catch(function (error) {
-                    toggleSearchState(birthSearchButton.parentElement.children);
+                    toggleSearchState(birthForm);
                     alert(error);
                 });
             }).catch(function (error) {
-                toggleSearchState(birthSearchButton.parentElement.children);
+                toggleSearchState(birthForm);
                 addClass(lateAnswer2, 'pending');
                 addClass(lateAnswer2, 'hidden');
                 alert(error + ' on "' + value + ' - Pokemon"');
@@ -208,6 +210,13 @@ idSelector("birth-form").addEventListener("submit", function (event) {
     } else {
         alert("Error. Invalid date.");
     }
+});
+
+var scrollLinks = document.querySelectorAll(".smooth");
+Object.values(scrollLinks).forEach(function (value, i) {
+    value.addEventListener("click", function (event) {
+        scrollIt(document.querySelector('.dest-smooth' + (i + 1)), 600);
+    });
 });
 
 // FUNCTIONS
@@ -317,6 +326,39 @@ function alphabet(selector) {
 
 function display(param) {
     console.log(param);
+}
+
+function scrollIt(destination) {
+    var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
+
+
+    var start = window.pageYOffset;
+    var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+    var documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+    var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+    var destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+    var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+
+    if ('requestAnimationFrame' in window === false) {
+        window.scroll(0, destinationOffsetToScroll);
+        return;
+    }
+
+    function scroll() {
+        var now = 'now' in window.performance ? performance.now() : new Date().getTime();
+        var time = Math.min(1, (now - startTime) / duration);
+        var timeFunction = time * (2 - time);
+        window.scroll(0, Math.ceil(timeFunction * (destinationOffsetToScroll - start) + start));
+
+        if (window.pageYOffset === destinationOffsetToScroll) {
+            return;
+        }
+
+        requestAnimationFrame(scroll);
+    }
+
+    scroll();
 }
 
 // INITIALIZING

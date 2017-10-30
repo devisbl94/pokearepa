@@ -18,6 +18,9 @@ body
 section
 	padding-bottom 10vh
 	box-shadow: 0 7px 10px darken($white, 50)
+	
+footer
+	margin-top 50px
 
 #main
 	background-color $red
@@ -35,7 +38,11 @@ section
 			align-items center
 			justify-content center
 			width 100%
-			
+
+#logo
+	width 25px
+	height auto
+
 #search-pkmn-submit
 	+above(992px)
 		text-align right
@@ -66,10 +73,36 @@ section
 
 
 // PRINCIPAL
+#principal
+	padding-top 10vh
+	
+	+below(767px)
+		background-image url('./../img/principal-background.jpg')
+		background-repeat no-repeat
+		background-size cover
+		padding 0
+		margin-top 100px
+		
+	+below(540px)
+		background-image none
+		
+#principal-text
+	+below(767px)
+		background-color rgba(0,0,0,0.7)
+		padding-top 50px
+		color $white
+		padding 50px 50px 50px 50px
+	+below(424px)
+		padding 20px 20px 0 20px
+	
 .principal-title
 	color $white
 	text-shadow 2px 2px darken($dark, 60)
 	padding-bottom 50px
+	font-size 36px
+	
+	+below(1023px)
+		font-size 24px
 
 #poster
 	+above(1200px)
@@ -80,10 +113,13 @@ section
 // CAROUSEL
 #carousel
 	background-color $gray
-	padding 50px
+	padding 50px 0 50px 0
+	
+	> *
+		width 100% !important
 	
 .container-box
-	padding 7vh
+	padding 7vh 0 7vh 0
 	
 .container-box , .container-box-full
 	border-radius 5px
@@ -132,12 +168,33 @@ section
 				+below(1200px)
 					font-size 20px
 					
-				+below(1024px)
-					padding 50px
+				+below(1023px)
 					font-size 16px
+				
+				+below(864px)
+					font-size 14px
+					padding 70px
+					
+				+below(540px)
+					font-size 11px
+					padding 50px
+					
+				+below(320px)
+					font-size 8px
+					padding 30px 40px 10px 40px
 				
 				> :first-child
 					font-weight bold
+					
+		.flex-controls
+			display flex
+
+			.vertical
+				display flex
+				flex-direction column
+				align-items center
+				justify-content center
+				width 100%
 
 @media all and (transform-3d), (-webkit-transform-3d) 
 	
@@ -157,9 +214,67 @@ section
 			-webkit-transform translate3d(0, 0, 0)
 			transform translate3d(0, 0, 0)
 
+// History
+#legends
+	padding 50px 0 100px 0
+	background-color $white
+	
+	img
+		box-shadow: 5px 7px 10px $lighter
+		
+	h2
+		padding-bottom 50px
+	
+#legends-principal
+	margin-bottom 50px
+	
+#legends-img
+	+below(767px)
+		margin-bottom 70px
+	
+.legend-text
+	font-style italic
+	line-height 32px
+	padding-top 20%
+	font-size 18px
+	
+	+below(1199px)
+		padding-top 0
+		
+	+below(991px)
+		line-height 24px
+		font-size 16px
+
+.legends-column
+	padding 0 25px 0 25px
+	
+	p
+		line-height 25px
+		padding-top 30px
+		font-style italic
+
+.margin
+	margin auto
+	
+#second
+	+below(767px)
+		margin-top 50px
 
 // BIRTH QUESTION
 #birth
 	padding 50px 0 100px 0
 	background-color $red
 	color $white
+	
+#birth-inputs
+	
+	+below(767px)
+		> *
+			margin 20px 0 20px 0
+
+#footer-img
+	width 100px
+	height auto
+
+#copyright
+	margin-top 50px

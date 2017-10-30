@@ -4,13 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>PokeArepa Project</title>
+	<title>PokéArepa Project</title>
 	<link rel="stylesheet" type="text/css" href="./lib/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="./lib/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
 <body>
-
 	<header>
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container-fluid">
@@ -21,21 +22,22 @@
 			            <span class="icon-bar"></span>
 			            <span class="icon-bar"></span>
 			        </button>
-			        <a class="navbar-brand" href="#">Brand</a>
+			        <a class="navbar-brand" href="./"><img id="logo" class="img-responsive" src="./img/pokelogo.png"></a>
 			    </div>
 			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			        <ul class="nav navbar-nav">
-			            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-			            <li><a href="#">Link</a></li>
-			            <li><a href="#">Link</a></li>
+			            <li><a class="smooth smooth1" href="#main">Start</a></li>
+			            <li><a class="smooth smooth2" href="#principal">Intro</a></li>
+			            <li><a class="smooth smooth3" href="#carousel">World</a></li>
+			            <li><a class="smooth smooth4" href="#legends">History</a></li>
+			            <li><a class="smooth smooth5" href="#birth">Let's Play</a></li>
 			        </ul>
 			    </div>
 			</div>
 		</nav>
 	</header>
-
 	<main>
-		<section id="main" class="jumbotron">
+		<section id="main" class="dest-smooth1 jumbotron">
 			<div class="container text-center">
 				<div class="row flex">
 					<div class="col-xs-12 col-md-6">
@@ -45,11 +47,8 @@
 					<div class="col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-0 flex">
 						<form action="#" id="main-form" class="form-inline vertical">
 							<div class="form-group">
-
 								<input type="text" class="form-control" id="search-pkmn" name="search-pkmn" maxlength="20" oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="setCustomValidity('')" required>
-
 								<button id="search-pkmn-submit" class="btn btn-default">Search <i id="loading" class="fa fa-spinner fa-spin hidden"></i><i id="go" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
-
 								<span class="info-text">Try and search for a Pokémon!<br>For example: Pikachu<br><span id="late-answer" class="pending hidden">Well... this is awkward...</span></span>
 							</div>
 						</form>
@@ -72,8 +71,8 @@
 				</div>
 			</div>
 		</section>
-		<section id="principal">
-			<div class="container">
+		<section id="principal" class="dest-smooth2">
+			<div id="principal-text" class="container">
 				<div class="row">
 					<div class="col-xs-12 col-sm-7">
 						<p>Pokémon are fictional creatures that are central to the Pokémon franchise.</p>
@@ -87,10 +86,12 @@
 				</div>
 			</div>
 		</section>
-		<section id="carousel" class="hidden-xs">
+		<section id="carousel" class="dest-smooth3">
 			<div class="container">
-				<div class="principal-title text-center">
-					<h2>The Pokémon world looks and acts like the real world in terms of geography, which is split into several regions.</h2>
+				<div class="row">
+					<div class="principal-title text-center">
+						<p>The Pokémon world looks and acts<br>like the real world in terms of geography,<br>which is split into several regions.</p>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -128,7 +129,6 @@
 										<p>It is composed of the large mainland, the north-eastern island of the Battle Zone, and several smaller islands on both sides of the region.</p>
 						            </div>
 						        </div>
-
 						        <div class="item">
 						            <img src="./img/unova.jpg" alt="Unova.pic">
 						            <div class="carousel-caption">
@@ -137,7 +137,6 @@
 							            <p>Although it is geographically based on New York City, it draws inspiration for its landmarks from the entire state of New York, which features a mixture of rural locations and urban areas as well as factory towns and industrial complexes.</p>
 						            </div>
 						        </div>
-
 						        <div class="item">
 						            <img src="./img/kalos.jpg" alt="Kalos.pic">
 						            <div class="carousel-caption">
@@ -155,10 +154,10 @@
 						            	<p>The Alola region is made of up four natural islands and one artificial island. It is a popular resort destination and attracts a lot of tourists from other regions.</p>
 						            </div>
 						        </div>
-						    	<a class="left carousel-control flex" href="#main-carousel" role="button" data-slide="prev">
+						    	<a class="left carousel-control flex-controls" href="#main-carousel" role="button" data-slide="prev">
 						    		<i class="fa fa-arrow-circle-left vertical" aria-hidden="true"></i>
 								</a>
-								<a class="right carousel-control flex" href="#main-carousel" role="button" data-slide="next">
+								<a class="right carousel-control flex-controls" href="#main-carousel" role="button" data-slide="next">
 									<i class="fa fa-arrow-circle-right vertical" aria-hidden="true"></i>
 								</a>
 						    </div>
@@ -167,33 +166,58 @@
 				</div>
 			</div>
 		</section>
-		<section id="legends">
+		<section id="legends" class="dest-smooth4">
 			<div class="container">
 				<div class="row">
-					<div class="col-xs-12">
-						
+					<div class="col-xs-12 text-center">
+						<h2>The Beginning of Time</h2>
+					</div>
+				</div>
+				<div id="legends-principal" class="row">
+					<div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-0 col-md-6">
+						<img id="legends-img" class="img-responsive center-block margin" src="./img/beginnings.jpg" align="beginnings.pic">
+					</div>
+					<div class="col-xs-12 col-sm-4 col-sm-offset-1">
+						<p class="legend-text">Before the beginning of Sinnoh, from a vortex of chaos emerged an egg. When Arceus hatched from this egg, it shaped the world with its thousand arms and created the land of Sinnoh. Arceus then created the Pokémon of time, the Pokémon of space and the Pokémon of antimatter. Eventually, people began to inhabit Sinnoh. Arceus then created three new Pokémon to give humans knowledge, emotions, and willpower. These three Pokémon are said to inhabit lakes in the land of Sinnoh. Dialga and Palkia inhabit the Timespace Dimensions, and Giratina was banished to the Distortion World by Arceus.</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="row legends-column">
+							<div class="col-xs-6 col-xs-offset-3">
+								<img class="img-responsive img-rounded" src="./img/lakeguardians.jpg">
+							</div>
+							<div class="col-xs-12">
+								<p>Then, during very early formation of the world, possibly sooner, Arceus creates Azelf, Uxie, and Mesprit to create willpower, knowledge, and emotion, respectively, attributes that are in all modern humans and Pokémon. After the formation of the Sinnoh region, they dive to the bottom of present-day Lake Valor, Lake Acuity, and Lake Verity, respectively, dubbing the term "the lake guardians."</p>
+							</div>
+						</div>
+					</div>
+					<div id="second" class="col-xs-12 col-sm-6">
+						<div class="row legends-column">
+							<div class="col-xs-6 col-xs-offset-3">
+								<img class="img-responsive img-rounded" src="./img/mew.jpg">
+							</div>
+							<div class="col-xs-12">
+								<p>Also in these early times, Mew appeared on the planet, containing the DNA of every Pokémon. There are many scientists who believe that Mew was the ancestor of all Pokémon. Apparently, it appears only to those people who are pure of heart and have a strong desire to see it.</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</section>
-		<section id="birth">
+		<section id="birth" class="dest-smooth5">
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 flex">
 						<form action="#" id="birth-form" class="form-inline vertical">
-							<div class="form-group text-center">
+							<div id="birth-inputs" class="form-group text-center">
 								<h3>What's your secret Pokémon?<br>Put your birth date,<br> and then select the first letter of your first and last name</h3>
-
 								<input type="date" class="form-control" id="birth-pkmn" name="birth-pkmn" min="1916-01-01" oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="setCustomValidity('')" required>
-
 								<select name="birth-first" id="birth-first" class="form-control">
 								</select>
-
 								<select name="birth-last" id="birth-last" class="form-control">
 								</select>
-
 								<button id="search-birth-pkmn" class="btn btn-default">Search <i id="loading" class="fa fa-spinner fa-spin hidden"></i><i id="go" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
-
 								<span id="late-answer2" class="info-text pending hidden">Eehhh... give me a sec</span>
 							</div>
 						</form>
@@ -202,9 +226,27 @@
 			</div>
 		</section>
 	</main>
-
-	<footer></footer>
-
+	<footer class="container-fluid">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-2">
+					<ul class="list-unstyled list-inline">
+						<h3>Powered by</h3>
+						<li><a href="https://pokeapi.co/" target="_blank">Pokéapi</a></li>
+						<li><a href="https://bulbapedia.bulbagarden.net/" target="_blank">Bulbapedia</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-4 text-right">
+					<img id="footer-img" class="img-responsive" src="./img/pokelogo.png">
+				</div>
+			</div>
+			<div class="row">
+				<div id="copyright" class="col-xs-12 text-center">
+					<p>Copyright &copy; 2017, Devis Buelvas. All Lefties Reserved</p>
+				</div>
+			</div>
+		</div>
+	</footer>
 	<script type="text/javascript" src="./lib/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="./lib/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./js/script.js"></script>

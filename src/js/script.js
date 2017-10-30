@@ -157,6 +157,7 @@ const drawPokemon = pokemonData => {
 idSelector("main-form").addEventListener("submit", (event) => {
     event.preventDefault();
     let toSearch = idSelector("search-pkmn");
+    let mainForm = toSearch.parentElement.children;
     let value = toSearch.value.toLowerCase();
     if (value == 'deoxys') {
         value = "deoxys-normal";
@@ -166,7 +167,7 @@ idSelector("main-form").addEventListener("submit", (event) => {
     }
     if (value.length > 0) {
         toSearch.style.background = '#FFF';
-        toggleSearchState(toSearch.parentElement.children);
+        toggleSearchState(mainForm);
         let lateAnswer = idSelector("late-answer");
         removeClass(lateAnswer, 'pending');
 
@@ -180,17 +181,17 @@ idSelector("main-form").addEventListener("submit", (event) => {
 
             drawPokemon(data).then( () => {
 
-                toggleSearchState(toSearch.parentElement.children);
+                toggleSearchState(mainForm);
                 addClass(lateAnswer, 'pending');
                 addClass(lateAnswer, 'hidden');
 
             }).catch( error => {
-                toggleSearchState(toSearch.parentElement.children);
+                toggleSearchState(mainForm);
                 alert(error)
             });
 
         }).catch( error => {
-            toggleSearchState(toSearch.parentElement.children);
+            toggleSearchState(mainForm);
             addClass(lateAnswer, 'pending');
             addClass(lateAnswer, 'hidden');
             alert(`${error} on "${value} - Pokemon"`);
@@ -202,8 +203,6 @@ idSelector("main-form").addEventListener("submit", (event) => {
     }
 });
 
-
-
 idSelector("birth-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -211,6 +210,7 @@ idSelector("birth-form").addEventListener("submit", (event) => {
     let birthFirst = idSelector("birth-first").value;
     let birthLast = idSelector("birth-last").value;
     let birthSearchButton = idSelector("search-birth-pkmn");
+    let birthForm = birthSearchButton.parentElement.children;
 
     if (isDate(birth)) {
         birth = addBirth(birth);
@@ -231,23 +231,23 @@ idSelector("birth-form").addEventListener("submit", (event) => {
                 }
             }, 5000);
 
-            toggleSearchState(birthSearchButton.parentElement.children);
+            toggleSearchState(birthForm);
 
             getData(result, 'pokemon').then( data => {
 
                 drawPokemon(data).then( () => {
 
-                    toggleSearchState(birthSearchButton.parentElement.children);
+                    toggleSearchState(birthForm);
                     addClass(lateAnswer2, 'pending');
                     addClass(lateAnswer2, 'hidden');
 
                 }).catch( error => {
-                    toggleSearchState(birthSearchButton.parentElement.children);
+                    toggleSearchState(birthForm);
                     alert(error)
                 });
 
             }).catch( error => {
-                toggleSearchState(birthSearchButton.parentElement.children);
+                toggleSearchState(birthForm);
                 addClass(lateAnswer2, 'pending');
                 addClass(lateAnswer2, 'hidden');
                 alert(`${error} on "${value} - Pokemon"`);
@@ -259,6 +259,16 @@ idSelector("birth-form").addEventListener("submit", (event) => {
     } else {
         alert("Error. Invalid date.")
     }
+})
+
+let scrollLinks = document.querySelectorAll(".smooth");
+Object.values(scrollLinks).forEach( (value, i) => {
+    value.addEventListener("click", event => {
+        scrollIt(
+            document.querySelector('.dest-smooth' + (i+1)),
+            600
+        );
+    })
 })
 
 
@@ -369,6 +379,37 @@ function alphabet(selector){
 
 function display(param){
     console.log(param);
+}
+
+function scrollIt(destination, duration = 200) {
+
+    const start = window.pageYOffset;
+    const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+    const documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+    const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+    const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+
+    if ('requestAnimationFrame' in window === false) {
+        window.scroll(0, destinationOffsetToScroll);
+        return;
+    }
+
+    function scroll() {
+        const now = 'now' in window.performance ? performance.now() : new Date().getTime();
+        const time = Math.min(1, ((now - startTime) / duration));
+        const timeFunction = time * (2 - time);
+        window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
+
+        if (window.pageYOffset === destinationOffsetToScroll) {
+            return;
+        }
+
+        requestAnimationFrame(scroll);
+    }
+
+    scroll();
 }
 
 // INITIALIZING
