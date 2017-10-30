@@ -187,14 +187,17 @@ idSelector("main-form").addEventListener("submit", (event) => {
 
             }).catch( error => {
                 toggleSearchState(mainForm);
-                alert(error)
+                display(error);
+                alert("Something weird happened. Try again!");
             });
 
         }).catch( error => {
             toggleSearchState(mainForm);
             addClass(lateAnswer, 'pending');
             addClass(lateAnswer, 'hidden');
-            alert(`${error} on "${value} - Pokemon"`);
+            // alert(`${error} on "${value} - Pokemon"`);
+            display(error);
+            alert(`"${value}" does not exist. Try again!`);
         })
 
     } else {
@@ -250,7 +253,8 @@ idSelector("birth-form").addEventListener("submit", (event) => {
                 toggleSearchState(birthForm);
                 addClass(lateAnswer2, 'pending');
                 addClass(lateAnswer2, 'hidden');
-                alert(`${error} on "${value} - Pokemon"`);
+                display(`${error} on "${value} - Pokemon"`);
+                alert("Something weird happened. Try again!");
             })
 
         } else {

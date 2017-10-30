@@ -143,13 +143,16 @@ idSelector("main-form").addEventListener("submit", function (event) {
                 addClass(lateAnswer, 'hidden');
             }).catch(function (error) {
                 toggleSearchState(mainForm);
-                alert(error);
+                display(error);
+                alert("Something weird happened. Try again!");
             });
         }).catch(function (error) {
             toggleSearchState(mainForm);
             addClass(lateAnswer, 'pending');
             addClass(lateAnswer, 'hidden');
-            alert(error + ' on "' + value + ' - Pokemon"');
+            // alert(`${error} on "${value} - Pokemon"`);
+            display(error);
+            alert('"' + value + '" does not exist. Try again!');
         });
     } else {
         toSearch.style.background = '#FFFFCC';
@@ -202,7 +205,8 @@ idSelector("birth-form").addEventListener("submit", function (event) {
                 toggleSearchState(birthForm);
                 addClass(lateAnswer2, 'pending');
                 addClass(lateAnswer2, 'hidden');
-                alert(error + ' on "' + value + ' - Pokemon"');
+                display(error + ' on "' + value + ' - Pokemon"');
+                alert("Something weird happened. Try again!");
             });
         } else {
             alert("i think you are a digimon");
