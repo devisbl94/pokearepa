@@ -75,6 +75,7 @@ const drawPokemon = pokemonData => {
                     habitat,
                     egg_groups,
                     flavor_text_entries,
+                    genera
                 } = entry;
 
                 let get_habitat = habitat == null ? 'none' : habitat.name;
@@ -83,6 +84,13 @@ const drawPokemon = pokemonData => {
                 flavor_text_entries.map( index => {
                     if (index.language.name == "en" && flavorText == false) {
                         flavorText = index.flavor_text;
+                    }
+                });
+
+                let generaDesc = false;
+                genera.map( index => {
+                    if (index.language.name == "en" && generaDesc == false) {
+                        generaDesc = index.genus;
                     }
                 });
 
@@ -95,7 +103,8 @@ const drawPokemon = pokemonData => {
                                     <img class="img-responsive center-block" src="${image}" />
                                 </div>
                                 <div class="col-xs-8">
-                                    <p><b>N° ${id} - ${capitalizeFirst(name)}</b></p>
+                                    <p><b>N° ${id} - ${capitalizeFirst(name)}</b><br>
+                                    ${generaDesc}</p>
                                     <p><b>Type:</b><br> ${types.reverse().map( value => {
                                         return capitalizeFirst(value.type.name);
                                     }).toLocaleString().replace(',',' - ')}</p>

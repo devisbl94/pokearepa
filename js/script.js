@@ -77,7 +77,8 @@ var drawPokemon = function drawPokemon(pokemonData) {
         getData(name, 'pokedex').then(function (entry) {
             var habitat = entry.habitat,
                 egg_groups = entry.egg_groups,
-                flavor_text_entries = entry.flavor_text_entries;
+                flavor_text_entries = entry.flavor_text_entries,
+                genera = entry.genera;
 
 
             var get_habitat = habitat == null ? 'none' : habitat.name;
@@ -89,8 +90,15 @@ var drawPokemon = function drawPokemon(pokemonData) {
                 }
             });
 
+            var generaDesc = false;
+            genera.map(function (index) {
+                if (index.language.name == "en" && generaDesc == false) {
+                    generaDesc = index.genus;
+                }
+            });
+
             var results = idSelector('results');
-            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-12 col-sm-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p><b>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</b></p>\n                                    <p><b>Type:</b><br> ' + types.reverse().map(function (value) {
+            results.innerHTML = '\n                    <div class="row">\n                        <div class="col-xs-12 col-sm-8">\n                            <div class="row">\n                                <div class="col-xs-4">\n                                    <img class="img-responsive center-block" src="' + image + '" />\n                                </div>\n                                <div class="col-xs-8">\n                                    <p><b>N\xB0 ' + id + ' - ' + capitalizeFirst(name) + '</b><br>\n                                    ' + generaDesc + '</p>\n                                    <p><b>Type:</b><br> ' + types.reverse().map(function (value) {
                 return capitalizeFirst(value.type.name);
             }).toLocaleString().replace(',', ' - ') + '</p>\n                                    <p><b>Abilities:</b><br> ' + abilities.reverse().map(function (value) {
                 return (value.is_hidden ? ' (HA) ' : '') + capitalizeFirst(value.ability.name);
