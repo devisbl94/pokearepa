@@ -5,14 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>PokéArepa Project</title>
+	<!-- Bootstrap -->
 	<link rel="stylesheet" type="text/css" href="./lib/bootstrap/css/bootstrap.min.css">
+	<!-- FontAwesome -->
 	<link rel="stylesheet" type="text/css" href="./lib/font-awesome/css/font-awesome.min.css">
+	<!-- Custom -->
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<!-- Favicon -->
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
 <body>
 	<header>
+		<!-- Navbar -->
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container-fluid">
 			    <div class="navbar-header">
@@ -37,6 +42,7 @@
 		</nav>
 	</header>
 	<main>
+		<!-- Jumbotron -->
 		<section id="main" class="dest-smooth1 jumbotron">
 			<div class="container text-center">
 				<div class="row flex">
@@ -45,6 +51,7 @@
 						<p>all the Pokémon data you'll ever need, in one place</p>
 					</div>
 					<div class="col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-0 flex">
+						<!-- Pokemon search -->
 						<form action="#" id="main-form" class="form-inline vertical">
 							<div class="form-group">
 								<input type="text" class="form-control" id="search-pkmn" name="search-pkmn" maxlength="20" oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="setCustomValidity('')" required>
@@ -54,6 +61,7 @@
 						</form>
 					</div>
 				</div>
+				<!-- Results -->
 				<div class="modal fade" id="main-results" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				    <div class="modal-dialog" role="document">
 				        <div class="modal-content">
@@ -72,6 +80,7 @@
 			</div>
 		</section>
 		<section id="principal" class="dest-smooth2">
+			<!-- Intro -->
 			<div id="principal-text" class="container">
 				<div class="row">
 					<div class="col-xs-12 col-sm-7">
@@ -87,6 +96,7 @@
 			</div>
 		</section>
 		<section id="carousel" class="dest-smooth3">
+			<!-- Carousel -->
 			<div class="container">
 				<div class="row">
 					<div class="principal-title text-center">
@@ -167,6 +177,7 @@
 			</div>
 		</section>
 		<section id="legends" class="dest-smooth4">
+			<!-- More content -->
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-12 text-center">
@@ -206,6 +217,7 @@
 			</div>
 		</section>
 		<section id="birth" class="dest-smooth5">
+			<!-- Birthdate game -->
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 flex">
@@ -226,6 +238,7 @@
 			</div>
 		</section>
 	</main>
+	<!-- Footer -->
 	<footer class="container-fluid">
 		<div class="container">
 			<div class="row">
